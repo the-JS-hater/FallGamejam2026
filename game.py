@@ -39,7 +39,7 @@ def setup():
     else:
         print("opened browser")
 
-    # subprocess.Popen(["typst", "watch", TYP_FILENAME])
+    subprocess.Popen(["typst", "watch", TYP_FILENAME])
 
     input_state['q'] = False
     return typ_file, listener
@@ -61,6 +61,7 @@ def teardown(typ_fd):
 
 def update_pos(pos):
     x, y = pos
+    #NOTE: local variables dumb dumb, fix
     if input_state.get('w'): y -= 1
     if input_state.get('a'): x -= 1
     if input_state.get('s'): y += 1
@@ -71,7 +72,7 @@ if __name__ == "__main__":
     typ_fd, listener = setup()
     listener.start()
 
-    tmp_pos = (100.0, 100.0)
+    tmp_pos = [100.0, 100.0]
     tmp_img = "teapot.png"
 
     while True:
@@ -79,7 +80,9 @@ if __name__ == "__main__":
         
         # UPDATE
         update_pos(tmp_pos)
-        # print(tmp_pos)
+        tmp_pos[0] -= 0.00005
+        tmp_pos[1] -= 0.00005
+        print(tmp_pos)
 
         # RENDER
         render_str = "#set page(height: 480pt, width: 600pt)\n"
