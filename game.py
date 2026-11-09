@@ -51,6 +51,7 @@ def render_sprite(pos, image_path):
 
 
 def commit_render(render_str, typst_fd):
+    os.truncate(typst_fd, 0)
     os.pwrite(typst_fd, render_str.encode(), 0)
 
 
