@@ -36,7 +36,7 @@ def setup():
     dir_path = str(pathlib.Path(__file__).parent.resolve())
     print("Dir path:" + str(dir_path))
 
-    #subprocess.Popen(["typst", "watch", TYP_FILENAME])
+    subprocess.Popen(["xdg-open", PDF_FILENAME])
 
     input_state['q'] = False
     return typ_file, listener
