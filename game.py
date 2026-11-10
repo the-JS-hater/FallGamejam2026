@@ -5,12 +5,13 @@ import webbrowser
 import subprocess
 import pathlib
 import os
-import typst
+import time
 from pynput import keyboard
 
 
 TYP_FILENAME = "render_image.typ"
 PDF_FILENAME = "render_image.pdf"
+OUT_FILENAME = "main.pdf"
 
 
 # mutable global state is fine, actually
@@ -33,10 +34,11 @@ def setup():
         on_release=on_release)
 
     typ_file = os.open(TYP_FILENAME, os.O_CREAT | os.O_WRONLY | os.O_NONBLOCK)
-    dir_path = str(pathlib.Path(__file__).parent.resolve())
-    print("Dir path:" + str(dir_path))
+    #dir_path = str(pathlib.Path(__file__).parent.resolve())
+    #print("Dir path:" + str(dir_path))
 
-    subprocess.Popen(["xdg-open", PDF_FILENAME])
+    #TODO: Launch the correct typst watch
+    subprocess.Popen(["xdg-open", OUT_FILENAME])
 
     input_state['q'] = False
     return typ_file, listener
@@ -50,8 +52,6 @@ def render_sprite(pos, image_path):
 def commit_render(render_str, typst_fd):
     os.truncate(typst_fd, 0)
     os.pwrite(typst_fd, render_str.encode(), 0)
-    #NOTE: might be possible to speed this up somehow
-    typst.compile(TYP_FILENAME, output=PDF_FILENAME, pdf_tags=False)
 
 
 def teardown(typ_fd):
@@ -76,6 +76,7 @@ if __name__ == "__main__":
     tmp_img = "teapot.png"
 
     while True:
+        time.sleep(1/30)
         if input_state.get('q'): break
         
         # UPDATE
@@ -87,6 +88,9 @@ if __name__ == "__main__":
         # RENDER
         render_str = "#set page(height: 480pt, width: 600pt)\n"
         render_str += render_sprite(tmp_pos, "teapot.png")
+
+        # Make sure not to render if file is empty
+        render_str += "\n#let ok = true"
         commit_render(render_str, typ_fd)
 
     teardown(typ_fd)
