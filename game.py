@@ -5,6 +5,7 @@ import webbrowser
 import subprocess
 import pathlib
 import os
+import typst
 from pynput import keyboard
 
 
@@ -19,7 +20,7 @@ input_state = {}
 def on_press(key):
     print(key.char)
     input_state[key.char] = True
-    
+
 
 def on_release(key):
     print(key.char)
@@ -34,12 +35,8 @@ def setup():
     typ_file = os.open(TYP_FILENAME, os.O_CREAT | os.O_WRONLY | os.O_NONBLOCK)
     dir_path = str(pathlib.Path(__file__).parent.resolve())
     print("Dir path:" + str(dir_path))
-    if not webbrowser.open_new("file://home" + dir_path + "/" + PDF_FILENAME):
-        print("failed to open browser")
-    else:
-        print("opened browser")
 
-    subprocess.Popen(["typst", "watch", TYP_FILENAME])
+    #subprocess.Popen(["typst", "watch", TYP_FILENAME])
 
     input_state['q'] = False
     return typ_file, listener
@@ -53,6 +50,8 @@ def render_sprite(pos, image_path):
 def commit_render(render_str, typst_fd):
     os.truncate(typst_fd, 0)
     os.pwrite(typst_fd, render_str.encode(), 0)
+    #NOTE: might be possible to speed this up somehow
+    typst.compile(TYP_FILENAME, output=PDF_FILENAME, pdf_tags=False)
 
 
 def teardown(typ_fd):
@@ -81,8 +80,8 @@ if __name__ == "__main__":
         
         # UPDATE
         update_pos(tmp_pos)
-        tmp_pos[0] -= 0.00005
-        tmp_pos[1] -= 0.00005
+        tmp_pos[0] -= 1
+        tmp_pos[1] -= 1
         print(tmp_pos)
 
         # RENDER
