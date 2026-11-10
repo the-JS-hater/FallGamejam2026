@@ -1,0 +1,3 @@
+[submodule "fast_typst"]
+	path = fast_typst
+	url = git@github.com:TheCompleteZygarde/fast_typst.git
