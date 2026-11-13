@@ -6,42 +6,26 @@ import subprocess
 import pathlib
 import os
 import time
-from pynput import keyboard
+import pygame
 
 
 TYP_FILENAME = "render_image.typ"
-PDF_FILENAME = "render_image.pdf"
 OUT_FILENAME = "main.pdf"
 
 
-# mutable global state is fine, actually
-input_state = {}
-
-
-def on_press(key):
-    print(key.char)
-    input_state[key.char] = True
-
-
-def on_release(key):
-    print(key.char)
-    if input_state[key.char]: input_state[key.char] = False
-
-
 def setup():
-    listener = keyboard.Listener(
-        on_press=on_press,
-        on_release=on_release)
+    pygame.init()
+    screen = pygame.display.set_mode()
+    clock = pygame.time.Clock()
+    pygame.display.flip()
 
     typ_file = os.open(TYP_FILENAME, os.O_CREAT | os.O_WRONLY | os.O_NONBLOCK)
     #dir_path = str(pathlib.Path(__file__).parent.resolve())
     #print("Dir path:" + str(dir_path))
 
-    #TODO: Launch the correct typst watch
-    subprocess.Popen(["xdg-open", OUT_FILENAME])
+    pdf_reader = subprocess.Popen(["zathura", OUT_FILENAME])
 
-    input_state['q'] = False
-    return typ_file, listener
+    return typ_file, clock, pdf_reader
 
 
 def render_sprite(pos, image_path):
@@ -54,36 +38,33 @@ def commit_render(render_str, typst_fd):
     os.pwrite(typst_fd, render_str.encode(), 0)
 
 
-def teardown(typ_fd):
+def teardown(typ_fd, pdf_reader):
     # maybe remove files and close browser, idk
     os.close(typ_fd)
+    pdf_reader.terminate()
+    pygame.quit()
 
 
-def update_pos(pos):
-    x, y = pos
-    #NOTE: local variables dumb dumb, fix
-    if input_state.get('w'): y -= 1
-    if input_state.get('a'): x -= 1
-    if input_state.get('s'): y += 1
-    if input_state.get('d'): x += 1
+def update_pos(pos, keys):
+    if keys[pygame.K_w]: pos[1] -= 1
+    if keys[pygame.K_a]: pos[0] -= 1
+    if keys[pygame.K_s]: pos[1] += 1
+    if keys[pygame.K_d]: pos[0] += 1
 
 
 if __name__ == "__main__":
-    typ_fd, listener = setup()
-    listener.start()
+    typ_fd, clock, pdf_reader = setup()
 
     tmp_pos = [100.0, 100.0]
     tmp_img = "teapot.png"
 
     while True:
-        time.sleep(1/30)
-        if input_state.get('q'): break
-        
+        pygame.event.get()
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_q]: break
+
         # UPDATE
-        update_pos(tmp_pos)
-        tmp_pos[0] -= 1
-        tmp_pos[1] -= 1
-        print(tmp_pos)
+        update_pos(tmp_pos, keys)
 
         # RENDER
         render_str = "#set page(height: 480pt, width: 600pt)\n"
@@ -93,4 +74,6 @@ if __name__ == "__main__":
         render_str += "\n#let ok = true"
         commit_render(render_str, typ_fd)
 
-    teardown(typ_fd)
+        clock.tick(30)
+
+    teardown(typ_fd, pdf_reader)
