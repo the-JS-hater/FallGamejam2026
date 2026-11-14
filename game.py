@@ -15,21 +15,23 @@ OUT_FILENAME = "main.pdf"
 
 TYP_TEMPLATE = "#set page(height: 480pt, width: 600pt)\n"
 
-ALL_SKILLS = ["interesting_fact_skill", "test", "test2", "test3"]
+ALL_SKILLS = ["interesting_fact_skill", "test1", "test2", "test3"]
 
 
 class DialogueOption:
     text = ""
     effect = 0.0
+    font = None
     response = None
     requrement = ""
 
-    def __init__(self, text, effect, response, requirement=None):
+    def __init__(self, text, effect, response, requirement=None, font=None):
         self.text = text
         self.effect = effect
         self.response = response
         if requirement: self.requrement = requirement
-        
+        if font: self.font = font
+
 
 class DialogueNode:
     text = ""
@@ -92,38 +94,26 @@ def splash_screen(typ_fd):
     with open("splash_screen.typ") as file:
         render_str = file.read()
     commit_render(render_str, typ_fd)
+    get_input()
+
+
+def get_input(num_options = None):
     while True:
         pygame.event.get()
         keys = pygame.key.get_pressed()
-        if not any(keys):
-            break
-    while True:
-        pygame.event.get()
-        keys = pygame.key.get_pressed()
-        if any(keys) and not keys[pygame.K_LSUPER]:
-            break
-
-
-def get_input(num_options):
-    pressed = True
-    while pressed:
-        pygame.event.get()
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_q]: break
-        pressed = False
-        for key in range(num_options):
-            if keys[pygame.key.key_code(str(key+1))] or keys[pygame.K_SPACE]:
-                pressed = True
-                continue
+        if not any(keys): break
 
     while True:
         pygame.event.get()
         keys = pygame.key.get_pressed()
         if keys[pygame.K_q]: break
         if keys[pygame.K_SPACE]: return -1
-        for key in range(num_options):
-            if keys[pygame.key.key_code(str(key+1))]:
-                return key
+        if not num_options:
+            if any(keys) and not keys[pygame.K_LSUPER]: break
+        else:
+            for key in range(num_options):
+                if keys[pygame.key.key_code(str(key+1))]:
+                    return key
     return -2
 
 
@@ -191,6 +181,7 @@ def main():
         if choice == -1:
             timewarp_counter += 1
             skills.append(get_skill(typ_fd, clock))
+            date_excitement = 5.0
             tree = root
             render_str += render_object((100, 0), tree.text)
             continue
@@ -205,15 +196,43 @@ def main():
         render_str += render_object((100, 0), tree.text)
 
         if date_excitement <= 0.0:
-            render_str += render_object((100, 200), "Date got bored and you lose")
+            render_str += render_object((100, 200), "Date got bored and you lose.\n\nTo timetravel, press space. Otherwise, press any button")
+            print(render_str)
+            commit_render(render_str, typ_fd)
+            timetravel = get_input() == -1
+            if timetravel:
+                render_str = typ_template
+                skills.append(get_skill(typ_fd, clock))
+                date_excitement = 5.0
+                tree = root
+                render_str += render_object((100, 0), tree.text)
+                continue
             break
 
         if date_excitement >= 10.0:
-            render_str += render_object((100, 200), "you win date, awooga")
+            render_str += render_object((100, 200), "you win date, awooga!\n\nTo timetravel, press space. Otherwise, press any button")
+            commit_render(render_str, typ_fd)
+            timetravel = get_input() == -1
+            if timetravel:
+                render_str = typ_template
+                skills.append(get_skill(typ_fd, clock))
+                date_excitement = 5.0
+                tree = root
+                render_str += render_object((100, 0), tree.text)
+                continue
             break
 
         if not tree.options:
-            render_str += render_object((100, 210), "dialogue tree ends here")
+            render_str += render_object((100, 200), "dialogue tree ends here\n\nTo timetravel, press space. Otherwise, press any button")
+            commit_render(render_str, typ_fd)
+            timetravel = get_input() == -1
+            if timetravel:
+                render_str = typ_template
+                skills.append(get_skill(typ_fd, clock))
+                date_excitement = 5.0
+                tree = root
+                render_str += render_object((100, 0), tree.text)
+                continue
             break
 
         # RENDER
@@ -222,20 +241,6 @@ def main():
         render_str = typ_template
 
         clock.tick(30)
-
-
-    print(render_str)
-    commit_render(render_str, typ_fd)
-    while True:
-        pygame.event.get()
-        keys = pygame.key.get_pressed()
-        if not any(keys):
-            break
-    while True:
-        pygame.event.get()
-        keys = pygame.key.get_pressed()
-        if any(keys):
-            break
 
 
     teardown(typ_fd, pdf_reader)
