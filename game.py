@@ -48,8 +48,6 @@ def setup():
     clock = pygame.time.Clock()
 
     typ_file = os.open(TYP_FILENAME, os.O_CREAT | os.O_WRONLY | os.O_NONBLOCK)
-    #dir_path = str(pathlib.Path(__file__).parent.resolve())
-    #print("Dir path:" + str(dir_path))
 
     pdf_reader = subprocess.Popen(["zathura", OUT_FILENAME])
 
@@ -84,10 +82,10 @@ def commit_render(render_str, typst_fd):
 
 
 def teardown(typ_fd, pdf_reader):
-    # maybe remove files and close browser, idk
     os.close(typ_fd)
     pdf_reader.terminate()
     pygame.quit()
+    os._exit(0)
 
 
 def splash_screen(typ_fd):
@@ -117,7 +115,24 @@ def get_input(num_options = None):
     return -2
 
 
-def get_skill(typ_fd, clock):
+def input_text(render_str, typ_fd, clock):
+    pygame.key.start_text_input()
+    input_string = ""
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.TEXTINPUT:
+                input_string += event.text
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    input_string = input_string[:-1]
+                elif event.key == pygame.K_RETURN:
+                    pygame.key.stop_text_input()
+                    return input_string
+        commit_render(render_str + render_object((100, 10), input_string), typ_fd)
+        clock.tick(30)
+
+
+def get_skill(typ_fd, owned_skills, clock):
     skills = ALL_SKILLS.copy()
     rng = random.Random()
     while len(skills) > 3:
@@ -125,14 +140,20 @@ def get_skill(typ_fd, clock):
         skills = skills[:index] + skills[index+1:]
 
     render_str = TYP_TEMPLATE
-    render_str += render_object((100, 0), "Choose a skill:")
-    for i, option in enumerate(skills):
-        render_str += render_object((100, 10+10*i), f"{str(i + 1)}: " + option)
+
+    out_str = "Choose a skill:\n"
+    for option in skills:
+        out_str += f"+ {option}\n"
+    render_str += render_object((100, 0), out_str)
+
+    skills_str = "Skills:\n"
+    for skill in owned_skills:
+        skills_str += f"- {skill}\n"
+    render_str += render_object((300, 0), skills_str)
 
     commit_render(render_str, typ_fd)
     choice = get_input(3)
     while choice < 0:
-        print(render_str)
         commit_render(render_str + render_object((100, 180), "\ninvalid choice, try again\n"), typ_fd)
         clock.tick(30)
 
@@ -140,38 +161,56 @@ def get_skill(typ_fd, clock):
     return skills[choice]
 
 
+def timetravel(typ_fd, timewarp_counter, skills, template, typ_template, root, clock):
+    timewarp_counter[0] += 1
+    skills.add(get_skill(typ_fd, skills, clock))
+    skills_str = "Skills:\n"
+    for skill in skills:
+        skills_str += f"- {skill}\n"
+    typ_template = template + render_object((300, 0), skills_str)
+    date_excitement = 5.0
+    tree = root
+    out_str = tree.text + "\n"
+    return out_str, tree, date_excitement, typ_template
+
 def main():
     typ_fd, clock, pdf_reader = setup()
 
     splash_screen(typ_fd)
 
+    template = TYP_TEMPLATE
+    render_str = template
+
+    render_str += render_object((100, 0), "Enter your name:")
+    commit_render(render_str, typ_fd)
+    name = input_text(render_str, typ_fd, clock)
+
     date_excitement = 5.0
     root = init_date()
     tree = root
-    skills = []
-    timewarp_counter = 0
-    typ_template = TYP_TEMPLATE
-    typ_template += render_sprite((0, 0), "Assets/WomanPortrait.png", (50, None))
+    skills = set()
+    timewarp_counter = [0]
+    template += render_sprite((0, 0), "Assets/WomanPortrait.png", (50, None))
+    typ_template = template + render_object((300, 0), "Skills:\n")
     render_str = typ_template
-    render_str += render_object((100, 0), tree.text)
+    output_str = tree.text + "\n"
 
     while True:
         unavailable = []
         if not tree: break
         for i, option in enumerate(tree.options):
             if (option.requrement and option.requrement not in skills):
-                render_str += render_object((100, 10+10*i), f"{str(i + 1)}: Hidden option")
+                output_str += "+ Hidden option\n"
                 unavailable += [i]
             else:
-                render_str += render_object((100, 10+10*i), f"{str(i + 1)}: " + option.text)
+                output_str += f"+ {option.text}\n"
 
-        print(render_str)
+        render_str += render_object((100, 0), output_str)
         commit_render(render_str, typ_fd)
         clock.tick(30)
 
         choice = get_input(len(tree.options))
         while choice in unavailable:
-            print(render_str)
             commit_render(render_str + render_object((100, 180), "\ninvalid choice, try again\n"), typ_fd)
             clock.tick(30)
 
@@ -179,11 +218,8 @@ def main():
 
         render_str = typ_template
         if choice == -1:
-            timewarp_counter += 1
-            skills.append(get_skill(typ_fd, clock))
-            date_excitement = 5.0
-            tree = root
-            render_str += render_object((100, 0), tree.text)
+            output_str, tree, date_excitement, typ_template = timetravel(typ_fd, timewarp_counter, skills, template, typ_template, root, clock)
+            render_str = typ_template
             continue
 
         if choice == -2:
@@ -193,50 +229,42 @@ def main():
         tree = tree.options[choice].response 
         if not tree: break
 
-        render_str += render_object((100, 0), tree.text)
+        output_str = tree.text + "\n"
 
         if date_excitement <= 0.0:
+            render_str += render_object((100, 0), output_str)
             render_str += render_object((100, 200), "Date got bored and you lose.\n\nTo timetravel, press space. Otherwise, press any button")
-            print(render_str)
             commit_render(render_str, typ_fd)
-            timetravel = get_input() == -1
-            if timetravel:
+            do_timetravel = get_input() == -1
+            if do_timetravel:
+                output_str, tree, date_excitement, typ_template = timetravel(typ_fd, timewarp_counter, skills, template, typ_template, root, clock)
                 render_str = typ_template
-                skills.append(get_skill(typ_fd, clock))
-                date_excitement = 5.0
-                tree = root
-                render_str += render_object((100, 0), tree.text)
                 continue
             break
 
         if date_excitement >= 10.0:
+            render_str += render_object((100, 0), output_str)
             render_str += render_object((100, 200), "you win date, awooga!\n\nTo timetravel, press space. Otherwise, press any button")
             commit_render(render_str, typ_fd)
-            timetravel = get_input() == -1
-            if timetravel:
+            do_timetravel = get_input() == -1
+            if do_timetravel:
+                output_str, tree, date_excitement, typ_template = timetravel(typ_fd, timewarp_counter, skills, template, typ_template, root, clock)
                 render_str = typ_template
-                skills.append(get_skill(typ_fd, clock))
-                date_excitement = 5.0
-                tree = root
-                render_str += render_object((100, 0), tree.text)
                 continue
             break
 
         if not tree.options:
+            render_str += render_object((100, 0), output_str)
             render_str += render_object((100, 200), "dialogue tree ends here\n\nTo timetravel, press space. Otherwise, press any button")
             commit_render(render_str, typ_fd)
-            timetravel = get_input() == -1
-            if timetravel:
+            do_timetravel = get_input() == -1
+            if do_timetravel:
+                output_str, tree, date_excitement, typ_template = timetravel(typ_fd, timewarp_counter, skills, template, typ_template, root, clock)
                 render_str = typ_template
-                skills.append(get_skill(typ_fd, clock))
-                date_excitement = 5.0
-                tree = root
-                render_str += render_object((100, 0), tree.text)
                 continue
             break
 
         # RENDER
-        print(render_str)
         commit_render(render_str, typ_fd)
         render_str = typ_template
 
