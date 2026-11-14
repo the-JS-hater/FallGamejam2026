@@ -159,6 +159,7 @@ def main():
     root = init_date()
     tree = root
     skills = []
+    timewarp_counter = 0
     typ_template = TYP_TEMPLATE
     typ_template += render_sprite((0, 0), "Assets/WomanPortrait.png", (50, None))
     render_str = typ_template
@@ -188,6 +189,7 @@ def main():
 
         render_str = typ_template
         if choice == -1:
+            timewarp_counter += 1
             skills.append(get_skill(typ_fd, clock))
             tree = root
             render_str += render_object((100, 0), tree.text)
