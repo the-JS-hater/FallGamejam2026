@@ -19,17 +19,11 @@ unlockable upgrades:
 		"Oh, anything particularly good?"
 		
 		[star wars lore](skill)
-			# Ola TODO, or schange subject
-			<ramble on excessivley about the extended star wars universe>
-				
-		[obsession-film](skill)
-			# TODO: Morgan
-			<talk about the movie>
-
-	[cooking]
-		# Maybe just cut all this, idk ?
-		[asian](skill to get far)
-		[italian](skill to get far)
+			"You try to impress your date with your wast, encyclopedic, knowledge of the
+star wars extended universe. You speak passionatley and with great enthusiasm"
+								
+		[artsty movie rant](skill)
+			"You give a detailed and thoughtful review of wes anderssons latest film, also showcasing great familiarity with his overall filmography"
 
 	[music]
 		"I'm really big into music"
@@ -51,7 +45,7 @@ movement was founded  partly in response to public remarks by him. But it is imp
 to separate the art from the artist"
 
 			#TODO: morgan
-			<Excessive glazing of Claptons career>
+			<Excessive glazing of Claptons career, whitout much actual substance>
 		[You mention being a banjo player](requires skill, your date is not impressed)
 
 # STAGE 2
