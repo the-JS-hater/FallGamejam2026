@@ -1,6 +1,8 @@
 # FallGamejam2026
 
 ## How to run
+Make sure to clone with the flag --recurse-submodules
+
 1. Make sure to have these installed:
   - Zathura with pdf extension, I have only tested with mupdf
   - uv to get the correct python version
