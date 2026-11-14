@@ -1,0 +1,139 @@
+unlockable upgrades:
+	
+
+[initial greeting]
+	# general trivialities
+	# something like the following
+
+	"Nice to meet you"
+
+	"I'm glad you could make it"
+
+# STAGE 1
+[interessts]	
+	"So what do you do for fun {name}?"
+	
+	[film]
+		"I've been watching alot of film lately"
+
+		"Oh, anything particularly good?"
+		
+		[star wars lore](skill)
+			# Ola TODO, or schange subject
+			<ramble on excessivley about the extended star wars universe>
+				
+		[obsession-film](skill)
+			# TODO: Morgan
+			<talk about the movie>
+
+	[cooking]
+		# Maybe just cut all this, idk ?
+		[asian](skill to get far)
+		[italian](skill to get far)
+
+	[music]
+		"I'm really big into music"
+
+		"What have you been listening to lately?"
+
+		[The Grateful Dead]
+			#TODO: morgan
+			<Tell a story about being a deadhead since you heard them live on acid once back in 67, you werent born then, but your eternal spirit was there>
+
+		[Eric Clapton]
+			"I've been listening alot to the discography of Eric clapton lately"
+			"Hey, do you know what the difference is between a baby and a bag of cocaine?... Clapton would never let a bag of coke fall from a balcony"
+
+			#TODO: change or cut this idk
+			"I was however disturbed recently to find out about his shilling for xenophobic
+candidate Enoch Powell and how the creation of the rock against racism
+movement was founded  partly in response to public remarks by him. But it is important
+to separate the art from the artist"
+
+			#TODO: morgan
+			<Excessive glazing of Claptons career>
+		[You mention being a banjo player](requires skill, your date is not impressed)
+
+# STAGE 2
+	"So... what do you generally do for a living?"
+
+	[Your artistry](requires art job)
+		"I've been unsuccessfully pursuing a career in the arts doing freelance work online"
+
+	[software management](requires software manager job)
+		"I work as the project lead at SoftSolutions AB where i am responsible for
+keeping the team looped in, shareholder value aligned, synced on the surface
+area of the product development enhancement process integration. Making sure to
+overpwomise and underdeliver, a personal motto of mine, if you know what i mean
+*wink wink*"
+
+	[GameDev](requires gamedev job)
+		"I've been working on a personal passion project. A dating simulator with time
+travel mechanics. It's a rouguelike about aquaring a personality and lived
+experiences through repeatedly groundhog-day'ing your date. In a way it can
+serve as a commentary on the current cultural phenomena of performativity
+and larping and authenitciaty in dating. Or perhaps the author is just mildly
+embarassed about the whole thing... did i say that?"
+
+	[Vet](requires veterinary job)
+		"I recently got work as a vet. It's been hearthbreaking so far. My very first
+day i had to put down a old cat suffering from growing tumours on their stomach
+intestines"
+
+	-> Date gets reminded of having recently lost their cat in a tragic piano
+getting dropped from above accident. It meant alot to them and they are now
+visibly upset. You didn't nessecarily do anything too wrong. Sometimes the world
+just sucks i guess
+
+	[NEET, no ambition, not alot going on in life]
+		"a job? in this economy?"
+
+
+# STAGE 3
+
+	"We live in strange times, what is a heartfelt issue for you? what is the greatest issue of our times?"
+
+	"Well, we have to end war, especially in Korea. We must ensure an end to world
+hunger. We must promote less materialism, and above all, godliness, in the
+youths of todays lost generations. Enviormental challanges must be tackled with
+utmost sincerity and vigor, with respect to the needs of industry naturally.
+We must work on reducing the political gaps we see today through meaningful
+dialogue and cooperation"
+
+	-> "The date seems rather unimpressed, and frankly bored, of your emtpy platitudes"
+	
+	[Drop take on authenticity and perfomativity](skill)
+		"We live in an epidemic of loneliness, and i believe one of the signs of the
+time is in the current discourse on larping and performativity. Dare i suggest?
+to live is to larp, and to larp is to live. In the back of the mind of the
+perfomative, whatever, for a stranger to come up and ask about the subject of
+performativity. In a sense it is a cry for human connection. An aching longing.
+And perhaps with the currents discourse overall distrust in the authenticity
+and genuine interesst of strangers interessts, surely spurred on by the age of
+social media and the commercially, engangement metric chasing driven development
+of reducing our hobbies into marketable and aestethically pleasing imagery
+- we must value genuine human connection in all it's embarassing and cringey
+sincerity wherever found in this cold and harsh world"
+
+	-> "The date is distubed by a sensation that hings just got a little bit too
+meta. and your monoluge seems to suffer what the kids refer to as 'overcooking',
+andfrankly the idea your trying to get was rrather unclear"
+
+	[Drop a horribly wrong take on something]
+		"Modern degeneracy and a general lack of faith has left our lives empty and
+meaningless. Nietscha saw this coming when he mournfully exclaimed our deicide.
+This lack of faith rests at the very hearth of our modern alienation"
+
+	-> "The date gets the impression you haven't actually read nietzhe"
+
+	[waffle on about nothing in particular like jordan petersson](Petersson skill)
+
+	"TODO: a good jordan petersson parody. Something something, talk about saving
+your tyranical father carl jung from the dragon in the underworld to prove you
+that belief in god has nothing to do with the existence or god your you see,
+you don't even really know what that question means? checkmate post-modernists,
+whoever, or whatever, you are"
+
+	"Oh, i'm not brave enough for politics"
+	# best choice??
+
