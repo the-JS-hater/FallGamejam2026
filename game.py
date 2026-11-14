@@ -42,7 +42,7 @@ class DialogueNode:
 
 def setup():
     pygame.init()
-    screen = pygame.display.set_mode()
+    screen = pygame.display.set_mode(size=(1, 1))
     clock = pygame.time.Clock()
 
     typ_file = os.open(TYP_FILENAME, os.O_CREAT | os.O_WRONLY | os.O_NONBLOCK)
@@ -61,8 +61,13 @@ def init_date():
     root = DialogueNode("Hello, i am date", [DialogueOption("fuck off", -5.0, responseA), DialogueOption("hello date, i am dad", 5.0, responseB), DialogueOption("Did you know _interesting fact_", 5.0, responseC, "interesting_fact_skill")])
     return root
 
-def render_sprite(pos, image_path):
-    return render_object(pos, f"#image(\"{image_path}\")")
+def render_sprite(pos, image_path, size = None):
+    size_s = ""
+    if size:
+        size_s = f", width: {size[0]}pt"
+        if size[1]:
+            size_s += f", height: {size[1]}pt"
+    return render_object(pos, f"#image(\"{image_path}\", scaling: \"pixelated\"{size_s})")
 
 
 def render_object(pos, typ_object):
@@ -81,6 +86,22 @@ def teardown(typ_fd, pdf_reader):
     os.close(typ_fd)
     pdf_reader.terminate()
     pygame.quit()
+
+
+def splash_screen(typ_fd):
+    with open("splash_screen.typ") as file:
+        render_str = file.read()
+    commit_render(render_str, typ_fd)
+    while True:
+        pygame.event.get()
+        keys = pygame.key.get_pressed()
+        if not any(keys):
+            break
+    while True:
+        pygame.event.get()
+        keys = pygame.key.get_pressed()
+        if any(keys) and not keys[pygame.K_LSUPER]:
+            break
 
 
 def get_input(num_options):
@@ -106,7 +127,7 @@ def get_input(num_options):
     return -2
 
 
-def get_skill():
+def get_skill(typ_fd, clock):
     skills = ALL_SKILLS.copy()
     rng = random.Random()
     while len(skills) > 3:
@@ -129,15 +150,18 @@ def get_skill():
     return skills[choice]
 
 
-if __name__ == "__main__":
+def main():
     typ_fd, clock, pdf_reader = setup()
+
+    splash_screen(typ_fd)
 
     date_excitement = 5.0
     root = init_date()
     tree = root
     skills = []
-
-    render_str = TYP_TEMPLATE
+    typ_template = TYP_TEMPLATE
+    typ_template += render_sprite((0, 0), "Assets/WomanPortrait.png", (50, None))
+    render_str = typ_template
     render_str += render_object((100, 0), tree.text)
 
     while True:
@@ -162,9 +186,9 @@ if __name__ == "__main__":
 
             choice = get_input(len(tree.options))
 
-        render_str = TYP_TEMPLATE
+        render_str = typ_template
         if choice == -1:
-            skills.append(get_skill())
+            skills.append(get_skill(typ_fd, clock))
             tree = root
             render_str += render_object((100, 0), tree.text)
             continue
@@ -193,7 +217,7 @@ if __name__ == "__main__":
         # RENDER
         print(render_str)
         commit_render(render_str, typ_fd)
-        render_str = TYP_TEMPLATE
+        render_str = typ_template
 
         clock.tick(30)
 
@@ -213,3 +237,7 @@ if __name__ == "__main__":
 
 
     teardown(typ_fd, pdf_reader)
+
+
+if __name__ == "__main__":
+    main()
