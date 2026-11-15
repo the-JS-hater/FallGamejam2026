@@ -27,7 +27,7 @@ skills: star_wars_lore, film_buff, banjo, art_job, software_manager_job, gamedev
 
 			[star wars lore] +1 (star_wars_lore)
 				You try to impress your date with your vast, encyclopedic knowledge of the star wars extended universe. You speak passionately and with great enthusiasm
-				-> They seem to like listening to you're raving and ranting
+				-> They seem to like listening to your raving and ranting
 
 			[artsy movie rant] -1 (film_buff)
 				You give a detailed and thoughtful review of Wes Anderson's latest film, also showcasing great familiarity with his overall filmography
@@ -35,11 +35,11 @@ skills: star_wars_lore, film_buff, banjo, art_job, software_manager_job, gamedev
 
 			[You realize you haven't actually seen a film in over a decade] -3
 				urgh... like... Titanic was good when i saw the premier
-				-> Your date gets a sense your stated film intersst was somewhat disingenuous
+				-> Your date gets a sense your stated film interest was somewhat disingenuous
 
-			[music]
-				You tell your date you're really big into music
-				-> "What have you been listening to lately?"
+  [music]
+    You tell your date you're really big into music
+    -> "What have you been listening to lately?"
 
 			[The Grateful Dead] -1
 				You tell your date about being a deadhead ever since you heard them live back in 67. You weren't actually born then, but your eternal spirit was there
@@ -77,8 +77,8 @@ skills: star_wars_lore, film_buff, banjo, art_job, software_manager_job, gamedev
 		-> Sounds... meaningful and important, surely. Shareholder value is my passion
 
 	[GameDev] +5 (gamedev_job)
-		You tell your date about your personal passion project. A dating simulator with time travel mechanics. It's a roguelike about acquiring a personality and lived experiences through repeatedly groundhog-day'ing your date. In a way it can serve as a commentary on the current cultural phenomena of performativity, larping and authenticity in dating. Or perhaps the author is just mildly embarrassed about the whole thing... did i say that?
-		-> You're date is impressed by the immense aura of being a game developer
+		You tell your date about your personal passion project. A dating simulator with time travel mechanics. It's a roguelite about acquiring a personality and lived experiences through repeatedly groundhog-day'ing your date. In a way it can serve as a commentary on the current cultural phenomena of performativity, larping and authenticity in dating. Or perhaps the author is just mildly embarrassed about the whole thing... did i say that?
+		-> Your date is impressed by the immense aura of being a game developer
 
 	[Vet] -5 (vet_job)
 		You tell your date you recently got work as a vet. It's been heartbreaking so far. On your very first day you had to put down an old cat suffering from growing tumours on their stomach intestines

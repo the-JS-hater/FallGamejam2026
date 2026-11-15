@@ -15,7 +15,9 @@ OUT_FILENAME = "main.pdf"
 
 TYP_TEMPLATE = "#set page(height: 480pt, width: 600pt)\n"
 
-ALL_SKILLS = ["interesting_fact_skill", "test1", "test2", "test3"]
+ALL_SKILLS = ["interesting_fact_skill", "test1", "test2", "test3", "#lorem(50)"]
+
+TEXT_WIDTH = 300
 
 
 class DialogueOption:
@@ -58,8 +60,15 @@ def init_date():
     responseA = DialogueNode("Wow, that's rude", [])
     responseB = DialogueNode("Wow, that's so funny", [])
     responseC = DialogueNode("Wow that's interesting", [])
-    root = DialogueNode("Hello, i am date", [DialogueOption("fuck off", -5.0, responseA), DialogueOption("hello date, i am dad", 5.0, responseB), DialogueOption("Did you know _interesting fact_", 5.0, responseC, "interesting_fact_skill")])
+    root = DialogueNode("Hello, i am date\n#lorem(50)", [DialogueOption("fuck off", -5.0, responseA), DialogueOption("hello date, i am dad", 5.0, responseB), DialogueOption("Did you know _interesting fact_", 5.0, responseC, "interesting_fact_skill")])
     return root
+
+
+def render_object(pos, typ_object, width = None):
+    x, y = pos
+    width_str = f"#box(width: {width}pt)[{typ_object}]" if width else typ_object
+    return f"#place(dx: {int(x)}pt, dy: {int(y)}pt)[{width_str}]\n"
+
 
 def render_sprite(pos, image_path, size = None):
     size_s = ""
@@ -68,11 +77,6 @@ def render_sprite(pos, image_path, size = None):
         if size[1]:
             size_s += f", height: {size[1]}pt"
     return render_object(pos, f"#image(\"{image_path}\", scaling: \"pixelated\"{size_s})")
-
-
-def render_object(pos, typ_object):
-    x, y = pos
-    return f"#place(dx: {int(x)}pt, dy: {int(y)}pt)[{typ_object}]\n"
 
 
 def commit_render(render_str, typst_fd):
@@ -128,7 +132,7 @@ def input_text(render_str, typ_fd, clock):
                 elif event.key == pygame.K_RETURN:
                     pygame.key.stop_text_input()
                     return input_string
-        commit_render(render_str + render_object((100, 10), input_string), typ_fd)
+        commit_render(render_str + render_object((100, 15), input_string, TEXT_WIDTH), typ_fd)
         clock.tick(30)
 
 
@@ -144,12 +148,12 @@ def get_skill(typ_fd, owned_skills, clock):
     out_str = "Choose a skill:\n"
     for option in skills:
         out_str += f"+ {option}\n"
-    render_str += render_object((100, 0), out_str)
+    render_str += render_object((100, 0), out_str, TEXT_WIDTH)
 
     skills_str = "Skills:\n"
     for skill in owned_skills:
         skills_str += f"- {skill}\n"
-    render_str += render_object((300, 0), skills_str)
+    render_str += render_object((400, 0), skills_str, 100)
 
     commit_render(render_str, typ_fd)
     choice = get_input(3)
@@ -167,7 +171,7 @@ def timetravel(typ_fd, timewarp_counter, skills, template, typ_template, root, c
     skills_str = "Skills:\n"
     for skill in skills:
         skills_str += f"- {skill}\n"
-    typ_template = template + render_object((300, 0), skills_str)
+    typ_template = template + render_object((400, 0), skills_str, 100)
     date_excitement = 5.0
     tree = root
     out_str = tree.text + "\n"
@@ -191,7 +195,7 @@ def main():
     skills = set()
     timewarp_counter = [0]
     template += render_sprite((0, 0), "Assets/WomanPortrait.png", (50, None))
-    typ_template = template + render_object((300, 0), "Skills:\n")
+    typ_template = template + render_object((400, 0), "Skills:\n")
     render_str = typ_template
     output_str = tree.text + "\n"
 
@@ -205,7 +209,7 @@ def main():
             else:
                 output_str += f"+ {option.text}\n"
 
-        render_str += render_object((100, 0), output_str)
+        render_str += render_object((100, 0), output_str, TEXT_WIDTH)
         commit_render(render_str, typ_fd)
         clock.tick(30)
 
@@ -232,7 +236,7 @@ def main():
         output_str = tree.text + "\n"
 
         if date_excitement <= 0.0:
-            render_str += render_object((100, 0), output_str)
+            render_str += render_object((100, 0), output_str, TEXT_WIDTH)
             render_str += render_object((100, 200), "Date got bored and you lose.\n\nTo timetravel, press space. Otherwise, press any button")
             commit_render(render_str, typ_fd)
             do_timetravel = get_input() == -1
@@ -243,7 +247,7 @@ def main():
             break
 
         if date_excitement >= 10.0:
-            render_str += render_object((100, 0), output_str)
+            render_str += render_object((100, 0), output_str, TEXT_WIDTH)
             render_str += render_object((100, 200), "you win date, awooga!\n\nTo timetravel, press space. Otherwise, press any button")
             commit_render(render_str, typ_fd)
             do_timetravel = get_input() == -1
@@ -254,7 +258,7 @@ def main():
             break
 
         if not tree.options:
-            render_str += render_object((100, 0), output_str)
+            render_str += render_object((100, 0), output_str, TEXT_WIDTH)
             render_str += render_object((100, 200), "dialogue tree ends here\n\nTo timetravel, press space. Otherwise, press any button")
             commit_render(render_str, typ_fd)
             do_timetravel = get_input() == -1
