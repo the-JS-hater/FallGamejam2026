@@ -386,18 +386,14 @@ def main():
                 continue
             break
  
-        if date_excitement >= 10.0:
-            render_str += render_object((100, 0), output_str, TEXT_WIDTH)
-            render_str += render_object((100, 200), "you win date, awooga!\n\nTo timetravel, press space. Otherwise, press any button")
-            commit_render(render_str, typ_fd)
-            do_timetravel = get_input() == -1
-            if do_timetravel:
-                output_str, tree, date_excitement, typ_template = timetravel(typ_fd, timewarp_counter, skills, template, typ_template, root, clock)
-                render_str = typ_template
-                continue
-            break
- 
         if not tree.options:
+            if date_excitement >= 10.0:
+                output_str = output_str[:-2] + " Want to meet up again?\""
+                render_str += render_object((100, 0), output_str, TEXT_WIDTH)
+                render_str += render_object((100, 200), "you win date, awooga!\n\n")
+                commit_render(render_str, typ_fd)
+                get_input()
+                break
             render_str += render_object((100, 0), output_str, TEXT_WIDTH)
             render_str += render_object((100, 200), "dialogue tree ends here\n\nTo timetravel, press space. Otherwise, press any button")
             commit_render(render_str, typ_fd)

@@ -113,5 +113,5 @@ skills: star_wars_lore, film_buff, banjo, art_job, software_manager_job, gamedev
  
  
 @end
-placeholder text
+"I have to go now."
  
