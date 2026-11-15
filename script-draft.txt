@@ -1,13 +1,12 @@
 unlockable upgrades:
+	# todo name the kills
 	
 
 [initial greeting]
 	# general trivialities
 	# something like the following
 
-	"Nice to meet you"
-
-	"I'm glad you could make it"
+	"Nice to meet you, I'm glad you could make it"
 
 # STAGE 1
 [interessts]	
