@@ -1,0 +1,116 @@
+# FORMAT
+# @label                  starts a node, the next line is what the date says
+# [text] +2 (skill)       an option, effect and skill are optional
+# 	plain line            what you say/do when picking it
+# 	-> text               the date's response, options indented under it belong to it
+# 	-> @label             jump to a node instead
+# an option or response with no options of its own continues to the next @label
+# one entry per line, indent with tabs
+
+skills: star_wars_lore, film_buff, banjo, art_job, software_manager_job, gamedev_job, vet_job, authenticity_take, petersson
+
+
+@greeting
+"Nice to meet you, I'm glad you could make it"
+
+	[Glad to be here]
+		You tell your date you're glad you made it too
+		-> :)
+
+
+@stage1
+"So what do you do for fun {name}?"
+
+	[film]
+		You tell your date you've been watching a lot of film lately
+		-> "Oh, anything particularly good?"
+
+			[star wars lore] +1 (star_wars_lore)
+				You try to impress your date with your vast, encyclopedic knowledge of the star wars extended universe. You speak passionately and with great enthusiasm
+				-> They seem to like listening to you're raving and ranting
+
+			[artsy movie rant] -1 (film_buff)
+				You give a detailed and thoughtful review of Wes Anderson's latest film, also showcasing great familiarity with his overall filmography
+				-> You're date seems rather bored
+
+			[You realize you haven't actually seen a film in over a decade] -3
+				urgh... like... Titanic was good when i saw the premier
+				-> Your date gets a sense your stated film intersst was somewhat disingenuous
+
+			[music]
+				You tell your date you're really big into music
+				-> "What have you been listening to lately?"
+
+			[The Grateful Dead] -1
+				You tell your date about being a deadhead ever since you heard them live back in 67. You weren't actually born then, but your eternal spirit was there
+				-> Your date gives a polite smile but does not seem fully at ease
+
+			[Eric Clapton]
+				You tell your date you've been listening a lot to the discography of Eric Clapton lately
+				-> "Oh, Clapton? What about him?"
+
+					[Tell a joke] -2
+						"Hey, do you know what the difference is between a baby and a bag of cocaine? Clapton would never let a bag of coke fall off a building"
+						-> damn, that's dark...
+
+					[Separate the art from the artist]
+						You were however disturbed recently to find out about his shilling for Enoch Powell, and how the rock against racism movement was started partly in response to it. However, his music is still very good
+						-> Yeah, that's a good point
+
+					[Glaze Clapton] -1
+						You spend fifteen minutes explaining that Clapton is literally god
+						-> Your date dozes off for a quick powernap
+
+			[You mention being a banjo player] +2 (banjo)
+				-> Your date is very impressed
+
+
+@stage2
+"So... what do you generally do for a living?"
+
+	[Your artistry] +2 (art_job)
+		You tell your date you've been unsuccessfully pursuing a career in the arts doing freelance work online
+		-> Oh that's fun, i'd like to see some of your art
+
+	[software management] -1 (software_manager_job)
+		"I work as a project lead at SoftSolutions AB, where I am responsible for keeping the team looped in, shareholder value aligned, synced on the surface area of the product development enhancement process integration. Making sure to overpromise and underdeliver, a personal motto of mine, if you know what I mean *wink wink*"
+		-> Sounds... meaningful and important, surely. Shareholder value is my passion
+
+	[GameDev] +5 (gamedev_job)
+		You tell your date about your personal passion project. A dating simulator with time travel mechanics. It's a roguelike about acquiring a personality and lived experiences through repeatedly groundhog-day'ing your date. In a way it can serve as a commentary on the current cultural phenomena of performativity, larping and authenticity in dating. Or perhaps the author is just mildly embarrassed about the whole thing... did i say that?
+		-> You're date is impressed by the immense aura of being a game developer
+
+	[Vet] -5 (vet_job)
+		You tell your date you recently got work as a vet. It's been heartbreaking so far. On your very first day you had to put down an old cat suffering from growing tumours on their stomach intestines
+		-> Your date gets reminded of having recently lost their cat in a tragic accident involving a piano getting dropped from above. It meant a lot to them and they are now visibly upset. You didn't necessarily do anything too wrong. Sometimes the world just sucks i guess
+
+	[NEET, no ambition, not a lot going on in life]
+		"a job? in this economy?"
+		-> real
+
+
+@stage3
+"We live in strange times, what is a heartfelt issue for you? What is the greatest issue of our times?"
+
+	[The greatest issues of our time] -3
+		You tell your date that we have to end war, especially in Korea. We must ensure an end to world hunger. We must promote less materialism, and above all, godliness, in the youths of today's lost generations. Environmental challenges must be tackled with utmost sincerity and vigor, with respect to the needs of industry naturally. We must work on reducing the political gaps we see today through meaningful dialogue and cooperation
+		-> Your date seems rather unimpressed, and frankly bored, by your empty platitudes. Also this whole American Psycho reference isn't really working
+
+	[Drop take on authenticity and performativity] -1 (authenticity_take)
+		"We live in an epidemic of loneliness, and i believe one of the signs of the time is in the current discourse on larping and performativity. Dare i suggest? To live is to larp, and to larp is to live. In the back of the mind of the performative is a hope, whatever, for a stranger to come up and ask about the subject of their performativity. In a sense it is a cry for human connection. An aching longing. And perhaps with the current discourse's overall distrust in the authenticity and genuine interest of strangers' interests, surely spurred on by the age of social media and the commercially, engagement metric chasing driven development of reducing our hobbies into marketable and aesthetically pleasing imagery - we must value genuine human connection in all its embarrassing and cringey sincerity wherever found in this cold and harsh world"
+		-> Your date is disturbed by a sensation that things just got a little bit too meta. And your monologue seems to suffer from what the kids refer to as 'overcooking', and frankly the idea you were trying to get across was rather unclear
+
+	[Drop a horribly wrong take on something] -1
+		"Modern degeneracy and a general lack of faith have left our lives empty and meaningless. Nietzsche saw this coming when he mournfully exclaimed our deicide. This lack of faith rests at the very heart of our modern alienation"
+		-> Your date gets the impression you haven't actually read Nietzsche
+
+	[waffle on about nothing in particular like jordan peterson] -3 (petersson)
+		"Well, what do you even mean by issue? Consider the lobster. The lobster has been around for 350 million years and it doesn't have issues, it has hierarchies. Have you cleaned your room? Because the room is chaos, and chaos is the dragon, and the dragon is guarding your tyrannical father carl jung in the underworld, and you have to descend and save him. To prove to you that belief in god has nothing to do with the existence of god. You see, you don't even really know what that question means? Checkmate post-modernists, whoever, or whatever, you are"
+		-> "Are you okay?"
+
+	[Oh, i'm not brave enough for politics]
+		-> "Same bro, same"
+
+
+@end
+placeholder text
